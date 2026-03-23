@@ -235,6 +235,14 @@ World`);
         expect(result).toEqual([]);
       });
 
+      it('Korean informational prompt does not trigger keyword', () => {
+        // "알려줘" (tell me about) is informational
+        expect(detectKeywordsWithType('오토파일럿 기능 알려줘')).toHaveLength(0);
+        expect(detectKeywordsWithType('랄프 뭐야')).toHaveLength(0);
+        expect(detectKeywordsWithType('울트라워크 사용법 설명해줘')).toHaveLength(0);
+        expect(detectKeywordsWithType('딥인터뷰 방법 소개해줘')).toHaveLength(0);
+      });
+
       it('should NOT detect "don\'t stop" phrase', () => {
         const result = detectKeywordsWithType("Don't stop until done");
         const ralphMatch = result.find((r) => r.type === 'ralph');
@@ -1511,22 +1519,28 @@ World`);
         expect(match).toBeDefined();
       });
 
-      it('should detect "취소" as cancel', () => {
+      it('should NOT detect "취소" as cancel (generic Korean word, too common)', () => {
         const result = detectKeywordsWithType('취소');
         const match = result.find((r) => r.type === 'cancel');
-        expect(match).toBeDefined();
+        expect(match).toBeUndefined();
       });
 
-      it('should detect "캔슬" as cancel', () => {
+      it('should NOT detect "캔슬" as cancel (generic Korean word, too common)', () => {
         const result = detectKeywordsWithType('캔슬');
         const match = result.find((r) => r.type === 'cancel');
-        expect(match).toBeDefined();
+        expect(match).toBeUndefined();
       });
 
-      it('should detect "스톱" as cancel', () => {
+      it('should NOT detect "스톱" as cancel (generic Korean word, too common)', () => {
         const result = detectKeywordsWithType('스톱');
         const match = result.find((r) => r.type === 'cancel');
-        expect(match).toBeDefined();
+        expect(match).toBeUndefined();
+      });
+
+      it('should NOT trigger cancel for "설정 취소 방법 알려줘" (false positive example)', () => {
+        const result = detectKeywordsWithType('설정 취소 방법 알려줘');
+        const match = result.find((r) => r.type === 'cancel');
+        expect(match).toBeUndefined();
       });
 
       it('should detect "울트라워크" as ultrawork', () => {
@@ -1726,8 +1740,8 @@ World`);
     });
 
     describe('Korean priority ordering', () => {
-      it('should return cancel over autopilot when "취소 오토파일럿"', () => {
-        const result = getPrimaryKeyword('취소 오토파일럿');
+      it('should return cancel over autopilot when "cancelomc 오토파일럿"', () => {
+        const result = getPrimaryKeyword('cancelomc 오토파일럿');
         expect(result?.type).toBe('cancel');
       });
 
@@ -1749,8 +1763,8 @@ World`);
     });
 
     describe('Korean + English mixed keywords', () => {
-      it('should return cancel as primary for "ralph 취소"', () => {
-        const result = getPrimaryKeyword('ralph 취소');
+      it('should return cancel as primary for "ralph cancelomc"', () => {
+        const result = getPrimaryKeyword('ralph cancelomc');
         expect(result?.type).toBe('cancel');
       });
 
