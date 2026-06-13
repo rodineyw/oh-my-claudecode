@@ -618,3 +618,10 @@ If Oh-My-ClaudeCode helps your workflow, consider sponsoring:
 - 🐛 Report bugs
 - 💡 Suggest features
 - 📝 Contribute code
+
+## GEO visibility benchmark
+
+OmC includes a [`geobench`](https://github.com/NomaDamas/geobench) product spec for measuring LLM hit rate, MRR, share of voice, and citations.
+
+- Spec: [`geobench/oh-my-claudecode.yaml`](geobench/oh-my-claudecode.yaml)
+- Runbook: [`docs/geobench.md`](docs/geobench.md)
